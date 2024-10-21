@@ -1,14 +1,14 @@
-import { Op } from "sequelize";
+
 import { Usuario } from "../../models";
 import { UsuarioModel } from "../../models/Usuario";
 
 export default class UsuarioRepository {
   async ListarUsuariosRepository() {
-    return await Usuario.findAll();
+    return await Usuario.scope('eliminarPassword').findAll();
   }
 
   async BuscarUsuarioRepository(id: number) {
-    return await Usuario.findOne({
+    return await Usuario.scope('eliminarPassword').findOne({
       where: {
         id,
       },

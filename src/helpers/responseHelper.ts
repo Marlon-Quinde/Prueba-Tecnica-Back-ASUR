@@ -1,4 +1,3 @@
-import { Response } from "express";
 import { CodigosHttpEnum } from "../enums/codesHttpEnum";
 
 interface ResponseHelperI<T> {
@@ -7,13 +6,13 @@ interface ResponseHelperI<T> {
   codigo: number;
 }
 
-export namespace responseHelper {
-  export const success = (
-    data?: any,
+export class ResponseHelper <T>{
+  success = (
+    data?: T,
     message: string = "Transacción Exitosa",
     codigo: number = CodigosHttpEnum.ok, 
   ) => {
-    const response: ResponseHelperI<any> = {
+    const response: ResponseHelperI<T> = {
       message,
       data,
       codigo
@@ -21,13 +20,15 @@ export namespace responseHelper {
     return response
   };
 
-  export const fail = (
+  fail = (
     codigo: number,
     message: string = 'Ocurrio un problema.',
+    data?: T,
   ) => {
-    const response: ResponseHelperI<null> = {
+    const response: ResponseHelperI<T> = {
         message,
         codigo,
+        data: data ? data : null
     }
     return response
   };

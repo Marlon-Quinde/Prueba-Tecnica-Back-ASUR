@@ -1,5 +1,5 @@
 import { hashSync } from "bcrypt";
-import { responseHelper } from "../../helpers/responseHelper"
+import { ResponseHelper } from "../../helpers/responseHelper"
 import { AuthLoginI, AuthRegisterI } from "../../interfaces/Auth.interface"
 import { UsuarioModel } from "../../models/Usuario";
 import { UsuarioService } from "../usuario/service";
@@ -13,17 +13,17 @@ const usuarioService = new UsuarioService()
 export const loginController = async (payload: AuthLoginI) => {
     try {
         const usuario = await usuarioService.buscarCorreoUsuarioService(payload.email)
-        if(!usuario) return responseHelper.fail(404, 'No existe un usuario registrado con ese correo')
+        if(!usuario) return new ResponseHelper().fail(404, 'No existe un usuario registrado con ese correo')
         
         const passwordValida = verificarPassword(payload.password, usuario.dataValues.password)
 
-        if(!passwordValida) return responseHelper.fail(403, 'Las contraseñas no coinciden')
+        if(!passwordValida) return new ResponseHelper().fail(403, 'Las contraseñas no coinciden')
 
         const token = jwt.sign({usuario: {
             name: usuario.dataValues.nombre
         }}, TOKEN_KEY,  { expiresIn: '12h' })
         
-        return responseHelper.success({token}, 'Inicion de sesion exitoso', 200)
+        return new ResponseHelper<{token: string}>().success({token}, 'Inicion de sesion exitoso', 200)
     } catch (error: any) {
         throw new Error(error)
     }
@@ -32,7 +32,7 @@ export const loginController = async (payload: AuthLoginI) => {
 export const registerController = async (payload: AuthRegisterI) => {
     try {
         const correo = await usuarioService.buscarCorreoUsuarioService(payload.email)
-        if(correo) return responseHelper.fail(404, 'Ya existe un usuario registrado con reste correo')
+        if(correo) return new ResponseHelper().fail(404, 'Ya existe un usuario registrado con reste correo')
 
         const payloadUsuario = {
             nombre: payload.nombre,
@@ -42,7 +42,7 @@ export const registerController = async (payload: AuthRegisterI) => {
 
         const nuevoUsuario = await usuarioService.crearUsuarioService(payloadUsuario as UsuarioModel)
 
-        return responseHelper.success({nombre: nuevoUsuario.nombre}, 'Usuario Registrado', 201)
+        return new ResponseHelper<{nombre: string}>().success({nombre: nuevoUsuario.nombre}, 'Usuario Registrado', 201)
 
     } catch (error: any) {
         throw new Error(error)

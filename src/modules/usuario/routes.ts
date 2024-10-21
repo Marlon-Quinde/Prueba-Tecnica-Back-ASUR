@@ -1,10 +1,12 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { actualizarUsuarioController, buscarUsuarioController, crearUsuarioController, eliminarUsuarioController, listarUsuarioController } from "./controller";
+import { tokenMdw } from "../../middlewares/tokenMdw";
 
 const routes = Router();
 
 routes.get(
   "/:id",
+  tokenMdw,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const idUsuario = req.params.id;
@@ -17,6 +19,7 @@ routes.get(
 );
 routes.get(
   "/listado",
+  tokenMdw,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const response = await listarUsuarioController()
@@ -28,6 +31,7 @@ routes.get(
 );
 routes.post(
   "/crear",
+  tokenMdw,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const payload = req.body
@@ -40,6 +44,7 @@ routes.post(
 );
 routes.put(
   "/actualizar",
+  tokenMdw,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const payload = req.body;
@@ -53,6 +58,7 @@ routes.put(
 );
 routes.delete(
   "/eliminar/:id",
+  tokenMdw,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const idUsuario = req.params.id
